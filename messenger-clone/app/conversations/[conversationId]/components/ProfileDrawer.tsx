@@ -2,10 +2,11 @@
 import useOtherUser from '@/app/hooks/useOtherUser';
 import { Conversation, User } from '@prisma/client';
 import { format } from 'date-fns';
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import {IoClose, IoTrash} from 'react-icons/io5'
 import {Dialog, DialogPanel, Transition, TransitionChild} from '@headlessui/react';
 import Avatar from '@/app/components/Avatar';
+import ConfirmModal from './ConfirmModal';
 
 interface ProfileDrawerProps {
   isOpen?: boolean;
@@ -17,7 +18,7 @@ interface ProfileDrawerProps {
 
 
 const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => {
-
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const otherUser = useOtherUser(data);
 
 
@@ -37,6 +38,8 @@ const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => 
   },[data])
 
   return (
+    <>
+    <ConfirmModal isOpen={confirmOpen} onClose={() => setConfirmOpen(false)} />
     <Transition show={isOpen}  as={React.Fragment} >
       <Dialog as='div' className={'relative z-50'} onClose={onClose}  >
           <TransitionChild as={React.Fragment} enter='ease-out duration-500' enterFrom='opacity-0' enterTo='opacity-100' leave='ease-in duration-500' leaveFrom='opacity-100' leaveTo='opacity-0' >
@@ -68,8 +71,8 @@ const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => 
                             <div>{title}</div>
                             <div className='text-sm text-gray-500' >{statusText}</div>
                             <div className='flex gap-10 my-8' >
-                              <div onClick={() => {}} className='flex flex-col gap-3 items-center cursor-pointer hover:opacity-75' >
-                                <div className='w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center' >
+                              <div onClick={() => setConfirmOpen(true)} className='flex flex-col gap-3 items-center cursor-pointer hover:opacity-75' >
+                                <div  className='w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center' >
                                   <IoTrash size={20} />
                                 </div>
                                 <div className='text-sm font-light text-neutral-600' >Delete</div>
@@ -113,6 +116,7 @@ const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => 
           </div>
       </Dialog>
     </Transition>
+    </>
   )
 }
 
