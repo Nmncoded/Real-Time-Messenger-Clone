@@ -8,6 +8,7 @@ import {Dialog, DialogPanel, Transition, TransitionChild} from '@headlessui/reac
 import Avatar from '@/app/components/Avatar';
 import ConfirmModal from './ConfirmModal';
 import AvatarGroup from '@/app/components/AvatarGroup';
+import useActiveList from '@/app/hooks/useActiveList';
 
 interface ProfileDrawerProps {
   isOpen?: boolean;
@@ -22,6 +23,9 @@ const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const otherUser = useOtherUser(data);
 
+  const {members} = useActiveList();
+  const isActive = members.indexOf(otherUser?.email!) !== -1;
+
 
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), 'PP')
@@ -35,8 +39,8 @@ const ProfileDrawer:React.FC<ProfileDrawerProps> = ({isOpen, onClose, data}) => 
     if(data.isGroup){
       return `${data.users.length} members`
     }
-    return 'Active';
-  },[data])
+    return isActive ? 'Active' : 'offline';
+  },[data, isActive])
 
   return (
     <>
