@@ -8,8 +8,7 @@
   ],
   "build": {
     "env": {
-      "NPM_FLAGS": "--no-audit --no-fund",
-      "CI": "false"
+      "NPM_FLAGS": "--no-audit --no-fund"
     }
   }
 }
